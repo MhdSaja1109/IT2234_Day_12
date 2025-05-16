@@ -1,11 +1,16 @@
-# IT2234_Day_12
- 1) Create the students and grades collections and insert the sample documents into both collections.
+# ICAE2_Day_12
+**Commands to create "students" and "grades" collections and insert data.**
 
-use unidb
+Create collections:
+
+```
 db.createCollection("students")
 db.createCollection("grades")
+```
 
+Insert documents:
 
+```
 db.students.insertMany([
 {
   _id: ObjectId("64b1fcd1f4a13a001e3d41a1"),
@@ -98,8 +103,9 @@ db.students.insertMany([
   age: 18
 }
 ])
+```
 
-
+```
 db.grades.insertMany([
 { subject: "Mathematics", score: 85, term: "Fall 2022", studentId: ObjectId("64b1fcd1f4a13a001e3d41a1") },
 { subject: "English", score: 90, term: "Fall 2022", studentId: ObjectId("64b1fcd1f4a13a001e3d41a1") },
@@ -139,20 +145,20 @@ db.grades.insertMany([
 { subject: "Business", score: 87, term: "Fall 2023", studentId: ObjectId("64b1fcd1f4a13a001e3d41aa") },
 { subject: "Finance", score: 82, term: "Spring 2024", studentId: ObjectId("64b1fcd1f4a13a001e3d41aa") }
 ])
+```
 
+**Query to find female students and show only name, age, and gender.**
 
-2) Show both collections in table view.
-
-3) Find the female students and only display their name, age and gender.
-
+```
 db.students.find(
   { gender: "Female" },
   { _id: 0, name: 1, age: 1, gender: 1 }
 )
+```
 
+**Students younger than 22 and enrolled after 2020.**
 
-4) Find the students who are younger than 22 and enrolled after 2020.
-
+```
 db.students.find(
   {
     age: { $lt: 22 },
@@ -160,10 +166,11 @@ db.students.find(
   },
   { _id: 0, name: 1, age: 1, enrollmentYear: 1 }
 )
+```
 
+**Use $lookup to find grades of a specific student.**
 
-5) Find all grades for "Alice Johnson".
-
+```
 db.grades.aggregate([
   {
     $lookup: {
@@ -176,19 +183,21 @@ db.grades.aggregate([
   { $unwind: "$students" },
   { $match: { "students.name": "Alice Johnson" } }
 ])
+```
 
+**Aggregation to count how many students studied Mathematics.**
 
-6) Find how many students followed the subject “Mathematics”.
-
+```
 db.grades.aggregate([
   { $match: { subject: "Mathematics" } },
   { $group: { _id: "$studentId" } },
   { $count: "studentCount" }
 ])
+```
 
+**Join and filter to show students with grades in Fall 2022 term.**
 
-7) Find all students with grades in the term "Fall 2022".
-
+```
 db.grades.aggregate([
   {
     $match: { term: "Fall 2022" }
@@ -213,3 +222,5 @@ db.grades.aggregate([
     }
   }
 ])
+```
+
